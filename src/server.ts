@@ -4,8 +4,6 @@ import config from './app/config';
 // const mongoose = require('mongoose');
 import mongoose from 'mongoose';
 
-
-
 async function main() {
   try {
     await mongoose.connect(config.database_url as string);
