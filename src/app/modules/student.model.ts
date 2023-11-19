@@ -5,14 +5,17 @@ import { Guardian, LocalGuardian, Student, UserName } from './student/student.in
 const userNameSchema = new Schema<UserName>({
     firstName: {
         type: String,
-        required: true
+        required: [true, 'First name is required'],
+        maxlength: [20, 'First name can not be more than 20 character'],
+        trim: true
     },
     middleName: {
         type: String
     },
     lastName: {
         type: String,
-        required: true
+        required: [true, 'Last name is required'],
+        trim: true
     }
 })
 
@@ -34,29 +37,54 @@ const localGuardianSchema = new Schema<LocalGuardian>(
         address: {type: String, required: true}
     }
 )
-
+// main Schema --------------
 const studentSchema = new Schema<Student>({
 
-    id: { type: String, required: true },
-    name: userNameSchema,
-    gender: ["male", "female"],
+    id: { type: String, required: true, unique: true },
+    name: {
+        type: userNameSchema,
+        required: true
+    },
+    gender: {
+        type: String,
+        enum: {
+            values: ["male", "female", "other"],
+            message: '{VALUE} is not valid gender'
+        },
+        required: true
+    },
     dateOfBirth: { type: String },
     email: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     
     emergencyNo: {
         type: String,
         required: true
     },
-    bloodGroup: ["A", "B", "AB", "O", "A+", "B+", "AB+", "O+"],
+    bloodGroup: {
+        type: String,
+        enum: ["A", "B", "AB", "O", "A+", "B+", "AB+", "O+"]
+    },
     presentAddress: { type: String },
     permanentAddress: { type: String },
-    guardian:guardianSchema,
-    localGuardian: localGuardianSchema,
+    guardian: {
+        type: guardianSchema,
+        required: true
+    },
+    localGuardian: {
+        type: localGuardianSchema,
+        required: true
+    },
     profileImg: { type: String },
-    isActive: ['active', 'blocked']
+    isActive: {
+        type: String,
+        enum: ['active', 'blocked'],
+        default: 'active'
+
+    }
 
 })
 
