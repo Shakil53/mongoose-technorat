@@ -3,7 +3,7 @@ import { StudentControllers } from './student.controller'
 
 const router = express.Router()
 
-// will cal controller function
+// will call controller function
 
 router.post('/create-student', StudentControllers.createStudent)
 

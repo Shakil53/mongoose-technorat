@@ -11,7 +11,7 @@ app.use(cors());
 
 
 // application route
-app.use('api/v1/students', StudentRoutes)
+app.use('/api/v1/students', StudentRoutes)
 
 const getAController = (req: Request, res: Response) => {
   const a = 20;
