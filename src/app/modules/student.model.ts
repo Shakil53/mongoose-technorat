@@ -126,8 +126,10 @@ studentSchema.pre('save', async function (next) {
 
 })
 // post save middleware or middleware hook
-studentSchema.post('save', function () {
+studentSchema.post('save', function (doc,next) {
+    doc.password =''
     // console.log(this, 'post hook : we save our data');
+    next()
 
 })
 
