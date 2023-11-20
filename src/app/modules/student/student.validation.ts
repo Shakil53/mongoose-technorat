@@ -30,6 +30,7 @@ const userNameValidationSchema = z.object({
   // Zod validation schema for Student
   const studenValidationSchema = z.object({
     id: z.string(),
+    password: z.string().max(20),
     name: userNameValidationSchema,
     gender: z.enum(['male', 'female', 'other']),
     dateOfBirth: z.string(),

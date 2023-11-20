@@ -1,9 +1,12 @@
 import { Schema, model } from 'mongoose';
-import { Guardian, LocalGuardian, Student, UserName } from './student/student.interface';
-import validator from 'validator';
+import { TGuardian, TLocalGuardian, TStudent, StudentMethods, StudentModel, TUserName } from './student/student.interface';
+// import validator from 'validator';
+import bcrypt from 'bcrypt'
+import config from '../config';
 
 
-const userNameSchema = new Schema<UserName>({
+
+const userNameSchema = new Schema<TUserName>({
     firstName: {
         type: String,
         required: [true, 'First name is required'],
@@ -33,7 +36,7 @@ const userNameSchema = new Schema<UserName>({
     }
 })
 
-const guardianSchema = new Schema<Guardian>(
+const guardianSchema = new Schema<TGuardian>(
     {
         fatherName: { type: String, required: true },
         fatherOccupation: { type: String, required: true },
@@ -43,7 +46,7 @@ const guardianSchema = new Schema<Guardian>(
         motherContactNo: {type: String, required: true}
     }
 )
-const localGuardianSchema = new Schema<LocalGuardian>(
+const localGuardianSchema = new Schema<TLocalGuardian>(
     {
         name: { type: String, required: true },
         occupation: { type: String, required: true },
@@ -52,9 +55,10 @@ const localGuardianSchema = new Schema<LocalGuardian>(
     }
 )
 // main Schema --------------
-const studentSchema = new Schema<Student>({
+const studentSchema = new Schema<TStudent, StudentModel, StudentMethods>({
 
     id: { type: String, required: true, unique: true },
+    password: { type: String, required: true, unique: true, maxlength: [20,'password can not be more then 20 character'] },
     name: {
         type: userNameSchema,
         required: true
@@ -110,6 +114,30 @@ const studentSchema = new Schema<Student>({
     }
 
 })
+// pre save middleware or middleware hook : will work on create function
+studentSchema.pre('save', async function (next) {
+    // console.log(this, 'pre hook : we will save our data');
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const user = this;
+    // hashing password and save into db using bcrypt
+  user.password = await  bcrypt.hash(user.password, Number(config.bycrypt_salt_rounds))
+
+    next()
+
+})
+// post save middleware or middleware hook
+studentSchema.post('save', function () {
+    // console.log(this, 'post hook : we save our data');
+
+})
+
+studentSchema.methods.isUserExists = async function (id: string) {
+    const existingUser = await Student.findOne({ id })
+    
+    return existingUser
+    
+}
 
 
-export const StudentModel = model<Student>('Student', studentSchema )
+
+export const Student = model<TStudent, StudentModel>('Student', studentSchema )
