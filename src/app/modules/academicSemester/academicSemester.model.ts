@@ -40,16 +40,16 @@ const acdemicSemesterSchema = new Schema<TAcademicSemester>({
 );
 
 //pre hook midleware
-acdemicSemesterSchema.pre('save', async function (next) {
-    const isSemesterExists = await AcademicSemester.findOne({
-        year: this.year,
-        name: this.name
-    })    
-    if (isSemesterExists) {
-        throw new Error('Semester is already exists')
-    }
-    next()
-})
+// acdemicSemesterSchema.pre('save', async function (next) {
+//     const isSemesterExists = await AcademicSemester.findOne({
+//         year: this.year,
+//         name: this.name
+//     })    
+//     if (isSemesterExists) {
+//         throw new Error('Semester is already exists')
+//     }
+//     next()
+// })
 
 
 

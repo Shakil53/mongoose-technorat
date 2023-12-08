@@ -127,29 +127,29 @@ const studentSchema = new Schema<TStudent, StudentModel, StudentMethods>({
 
 })
 // pre save middleware or middleware hook : will work on create function
-studentSchema.pre('save', async function (next) {
-    // console.log(this, 'pre hook : we will save our data');
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const user = this;
-    // hashing password and save into db using bcrypt
-//   user.password = await  bcrypt.hash(user.password, Number(config.bycrypt_salt_rounds))
+// studentSchema.pre('save', async function (next) {
+//     // console.log(this, 'pre hook : we will save our data');
+//     // eslint-disable-next-line @typescript-eslint/no-this-alias
+//     const user = this;
+//     // hashing password and save into db using bcrypt
+// //   user.password = await  bcrypt.hash(user.password, Number(config.bycrypt_salt_rounds))
 
-    next()
+//     next()
 
-})
-// post save middleware or middleware hook
-studentSchema.post('save', function (doc,next) {
-    // doc.password =''
-    // console.log(this, 'post hook : we save our data');
-    next()
+// })
+// // post save middleware or middleware hook
+// studentSchema.post('save', function (doc,next) {
+//     // doc.password =''
+//     // console.log(this, 'post hook : we save our data');
+//     next()
 
-})
-// query middleware
-studentSchema.pre('find', function (next) {
-    console.log();
+// })
+// // query middleware
+// studentSchema.pre('find', function (next) {
+//     console.log();
     
-    next()
-})
+//     next()
+// })
 
 studentSchema.methods.isUserExists = async function (id: string) {
     const existingUser = await Student.findOne({ id })

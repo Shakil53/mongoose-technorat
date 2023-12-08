@@ -38,36 +38,36 @@ const userSchema = new Schema<TUser>({
     timestamps: true
 },
 );
-userSchema.pre('save', async function (next) {
-    // console.log(this, 'pre hook : we will save our data');
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const user = this;
-    // hashing password and save into db using bcrypt
-  user.password = await  bcrypt.hash(user.password, Number(config.bycrypt_salt_rounds))
+// userSchema.pre('save', async function (next) {
+//     // console.log(this, 'pre hook : we will save our data');
+//     // eslint-disable-next-line @typescript-eslint/no-this-alias
+//     const user = this;
+//     // hashing password and save into db using bcrypt
+//   user.password = await  bcrypt.hash(user.password, Number(config.bycrypt_salt_rounds))
 
-    next()
+//     next()
 
-})
+// })
 
-// query middleware
-userSchema.pre('save', async function (next) {
-    const user = this;
-    user.password = await bcrypt.hash(
-        user.password,
-        Number(config.bycrypt_salt_rounds),
-    )
+// // query middleware
+// userSchema.pre('save', async function (next) {
+//     const user = this;
+//     user.password = await bcrypt.hash(
+//         user.password,
+//         Number(config.bycrypt_salt_rounds),
+//     )
    
     
-    next()
-})
+//     next()
+// })
 
-// set '' after saving password
-userSchema.post('save', function (doc,next) {
-    doc.password =''
-    // console.log(this, 'post hook : we save our data');
-    next()
+// // set '' after saving password
+// userSchema.post('save', function (doc,next) {
+//     doc.password =''
+//     // console.log(this, 'post hook : we save our data');
+//     next()
 
-})
+// })
 
 
 

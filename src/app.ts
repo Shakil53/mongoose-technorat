@@ -6,8 +6,9 @@ import cors from 'cors';
 import { StudentRoutes } from './app/modules/student/student.route';
 import { UserRoutes } from './app/modules/user/user.route';
 import globalErrorhandler from './app/middlewares/globalErrorhandler';
-import notFound from './app/middlewares/notfound';
+
 import router from './app/routes';
+import notFound from './app/middlewares/notfound';
 
 
 const app: Application = express();
@@ -20,7 +21,7 @@ app.use(cors());
 app.use('/api/v1/', router);
 
 
-const test = (req: Request, res: Response) => {
+const test = async(req: Request, res: Response) => {
   const a = 20;
   res.send(a);
 };
@@ -28,6 +29,8 @@ const test = (req: Request, res: Response) => {
 app.get('/', test);
 
 app.use(globalErrorhandler);
+
+//not Found
 app.use(notFound)
 
 export default app;

@@ -14,7 +14,7 @@ const createCourseIntoDB = async (payload: TCourse) => {
 
 const getAllCoursesFromDB = async (query: Record<string, unknown>) => {
     const courseQuery = new QueryBuilder(
-        Course.find().populate('preRequisiteCourses.course'),
+        Course.find().populate('preRequisiteCourse.course'),
         query,
     )
         .search(CourseSearchableFields)
@@ -155,7 +155,7 @@ const removeFacultyFromCourseFromDB = async(
 }
 
 
-export const CoursService = {
+export const CourseService = {
     createCourseIntoDB,
     getAllCoursesFromDB,
     getSingleCourseFromDB,
