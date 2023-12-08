@@ -6,6 +6,8 @@ import config from '../config';
 
 
 
+
+
 const userNameSchema = new Schema<TUserName>({
     firstName: {
         type: String,
@@ -22,7 +24,8 @@ const userNameSchema = new Schema<TUserName>({
         // }
     },
     middleName: {
-        type: String
+        type: String,
+        trim: true
     },
     lastName: {
         type: String,
@@ -57,8 +60,15 @@ const localGuardianSchema = new Schema<TLocalGuardian>(
 // main Schema --------------
 const studentSchema = new Schema<TStudent, StudentModel, StudentMethods>({
 
-    id: { type: String, required: true, unique: true },
-    password: { type: String, required: true, unique: true, maxlength: [20,'password can not be more then 20 character'] },
+    id: { type: String, required: [true, 'ID is required'], unique: true },
+    user: {
+        type: Schema.Types.ObjectId,
+        required: [true, 'User ID is required'],
+        unique: true,
+        ref: 'User'
+
+    },
+    
     name: {
         type: userNameSchema,
         required: true
@@ -71,7 +81,7 @@ const studentSchema = new Schema<TStudent, StudentModel, StudentMethods>({
         },
         required: true
     },
-    dateOfBirth: { type: String },
+    dateOfBirth: { type: Date },
     email: {
         type: String,
         required: true,
@@ -106,11 +116,13 @@ const studentSchema = new Schema<TStudent, StudentModel, StudentMethods>({
         required: true
     },
     profileImg: { type: String },
-    isActive: {
-        type: String,
-        enum: ['active', 'blocked'],
-        default: 'active'
+    admissionSemester: { type: Schema.Types.ObjectId },
+    
 
+   
+    isDeleted: {
+        type: Boolean,
+        default: false
     }
 
 })
@@ -120,17 +132,23 @@ studentSchema.pre('save', async function (next) {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const user = this;
     // hashing password and save into db using bcrypt
-  user.password = await  bcrypt.hash(user.password, Number(config.bycrypt_salt_rounds))
+//   user.password = await  bcrypt.hash(user.password, Number(config.bycrypt_salt_rounds))
 
     next()
 
 })
 // post save middleware or middleware hook
 studentSchema.post('save', function (doc,next) {
-    doc.password =''
+    // doc.password =''
     // console.log(this, 'post hook : we save our data');
     next()
 
+})
+// query middleware
+studentSchema.pre('find', function (next) {
+    console.log();
+    
+    next()
 })
 
 studentSchema.methods.isUserExists = async function (id: string) {

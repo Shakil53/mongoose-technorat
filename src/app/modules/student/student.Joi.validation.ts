@@ -44,7 +44,7 @@ import Joi from 'joi'
             address: Joi.string().required(),
         });
         
-        const studentValidationSchema = Joi.object({
+        const studentValidationSchemajoi = Joi.object({
             id: Joi.string().required(),
             name: userNameValidationSchema.required(),
             gender: Joi.string()
@@ -75,4 +75,4 @@ import Joi from 'joi'
         });  
 
 // ----------------------------------------------------------------------
-export default studentValidationSchema;
+export default studentValidationSchemajoi;
