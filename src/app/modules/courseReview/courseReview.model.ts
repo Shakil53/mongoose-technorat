@@ -61,4 +61,4 @@ const courseReviewSchema = new Schema<TCourseReview>({
 
 //model create over the courseReview Schema
 
-export const courseReview = model<TCourseReview>('CourseReview', courseReviewSchema)
+export const CourseReview = model<TCourseReview>('CourseReview', courseReviewSchema)
