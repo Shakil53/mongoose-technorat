@@ -4,6 +4,7 @@ import { AcademicSemester } from "../academicSemester/academicSemester.model"
 import AppError from "../../errors/AppError"
 import httpStatus from "http-status"
 import QueryBuilder from "../../builder/QueryBuilder"
+import { SemesterRegistrationController } from "./semesterRegistration.controller"
 
 //create semesterRegistration
 const createSemesterRegistrationIntoDB = async (payload: TSemesterRegistration) => {
@@ -72,6 +73,7 @@ const getSingleSemesterRegistration = async (id: string) => {
 
 
 const updateSemesterRegistration = async (id: string,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     payload: Partial<TSemesterRegistration>
 ) => {
 
@@ -86,11 +88,35 @@ const updateSemesterRegistration = async (id: string,
     }
     
     //if the requested semester registration is ended, we will not update anything
-    const requestedSemesterStatus = isSemesterRegistrationExists.status
+    const currentSemesterStatus = isSemesterRegistrationExists.status
+    const requestedStatus = payload?.status;
     
-    if (requestedSemesterStatus === 'ENDED') {
-        throw new AppError(httpStatus.BAD_REQUEST, `This semester is already ${requestedSemesterStatus} ended`)
+    if (currentSemesterStatus === 'ENDED') {
+        throw new AppError(httpStatus.BAD_REQUEST, `This semester is already ${currentSemesterStatus} ended`)
     }
+
+    //upcoming---> ongoing---> ended
+    if (currentSemesterStatus === 'UPCOMING' && requestedStatus ==='ENDED') {
+        throw new AppError(
+            httpStatus.BAD_REQUEST,
+            `You can not directly change status from ${currentSemesterStatus} to ${requestedStatus}`,
+        )
+    }
+
+    if (currentSemesterStatus === 'ONGOING' && requestedStatus === 'UPCOMING') {
+        throw new AppError(
+            httpStatus.BAD_REQUEST,
+            `Your can not change status from ${currentSemesterStatus} to ${requestedStatus}`
+        )
+    }
+
+    const result = await semesterRegistration.findByIdAndUpdate(id, payload, {
+        new: true,
+        runValidators: true,
+    } )
+
+
+    return result;
 
 }
 
