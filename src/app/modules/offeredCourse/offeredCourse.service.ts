@@ -13,7 +13,7 @@ import { FacaltyModel } from "../faculty/faculty.model";
 const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
 
     //check if the semester id is Exist
-    const { semesterRegistration, academicFaculty, academicDepartment, course, faculty } = payload;
+    const { semesterRegistration, academicFaculty, academicDepartment, course, faculty, section } = payload;
 
     const isSemesterRegistrationExists = await SemesterRegistration.findById(semesterRegistration)
     if (!isSemesterRegistrationExists) {
@@ -41,13 +41,20 @@ const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
 
     //check if the department is belong to the faculty
     const isDepartmentBelongToFaculty = await AcademicDepartment.findOne({
-         academicFaculty,
-        academicDepartment
+        _id: academicDepartment,
+         academicFaculty
     })
     if (!isDepartmentBelongToFaculty) {
-        throw new AppError(httpStatus.NOT_FOUND,`This ${isAcademicDepartmentExists.name} is not belong to this ${isAcademicFacultyExists.name}`)
+        throw new AppError(httpStatus.BAD_REQUEST,`This ${isAcademicDepartmentExists.name} is not belong to this ${isAcademicFacultyExists.name}`)
     }
 
+    //check if the same offered course same section in same registered semester exists
+    const isSameOfferedCourseExistsWithSameRegisteredWithSameSection = await OfferedCourse.findOne({
+        semesterRegistration,course, section
+    })
+    if (isSameOfferedCourseExistsWithSameRegisteredWithSameSection) {
+        throw new AppError(httpStatus.BAD_REQUEST,`offered course with same section is already exists`)
+    }
     const result = await OfferedCourse.create({...payload, academicSemester})
     
     return result;
