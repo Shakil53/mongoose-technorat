@@ -6,7 +6,8 @@ import { OfferedCourse } from "./offeredCourse.model";
 import { AcademicFaculty } from "../academicFaculty/academicFaculty.model";
 import { AcademicDepartment } from "../academicDepartment/academicDepartment.model";
 import { Course } from "../course/course.model";
-import { FacaltyModel } from "../faculty/faculty.model";
+import { FacaltyModel} from "../faculty/faculty.model";
+import { hasTimeConflict } from "../../utils/offeredCourse.utilies";
 
 
 
@@ -69,18 +70,13 @@ const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
         endTime,
     }
 
-    assignedSchedules.forEach((schedule) => {
-        
-        const existingStartTime = new Date(`1970-01-01T${schedule.startTime}`)
-        const existingEndTime = new Date(`1970-01-01T${schedule.endTime}`)
-        const newStartTime = new Date(`1970-01-01T${newSchedules.startTime}`)
-        const newEndTime = new Date(`1970-01-01T${newSchedules.endTime}`)
-        
-        if (newStartTime < existingEndTime && newEndTime > existingStartTime) {
-            throw new AppError(httpStatus.CONFLICT, `This faculty is not availabe at that time ! Choose other time or day`)
-        }
-
-    })
+    if (hasTimeConflict(assignedSchedules, newSchedules)) {
+        throw new AppError(
+            httpStatus.CONFLICT,
+            `This faculty is not available at that time! choose other time or day`
+        )
+    };
+   
 
 
 
@@ -93,6 +89,22 @@ const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
     return result;
 
 } 
+
+
+// const updateOfferedCourseIntoDB = async(
+//     id: string,
+//     payload: Partial<TOfferedCourse>,
+// ) => {
+    
+
+//     const isOfferedCourseExists = await OfferedCourse.findById(id);
+// }
+// if (!isOfferedCourseExists) {
+//         throw new AppError(httpStatus.NOT_FOUND, 'Offered Course not found!')
+//     }
+
+// const isFacultyExists = await Faculty.findById(faculty)
+
 
 
 
