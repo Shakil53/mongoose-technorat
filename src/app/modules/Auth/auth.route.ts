@@ -15,4 +15,4 @@ router.post(
 )
 
 
-export const AcademicSemesterRoutes = router;
+export const AuthRoutes = router;
