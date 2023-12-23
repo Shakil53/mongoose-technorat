@@ -3,6 +3,7 @@ import express from 'express';
 import validateRequest from '../../middlewares/validateRequest';
 import { FacultyValidation } from './faculty.validation';
 import { FacultyController } from './faculty.controller';
+import auth from '../../middlewares/auth';
 
 
 const router = express.Router();
@@ -29,6 +30,8 @@ router.delete('/:id', FacultyController.deleteFaculty)
 router.get(
     '/',
     FacultyController.getSingleFaculty
+)
+router.get( '/', auth(), FacultyController.getAllFaculties
 )
 
 
