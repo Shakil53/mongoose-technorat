@@ -56,11 +56,14 @@ userSchema.post('save', function (doc,next) {
     next()
 })
 
+//static method for checking user exist
 userSchema.statics.isUserExistByCustomId = async function (id:string) {
   return await User.findOne({id})
 }
-
-
+//static method for password checking
+userSchema.statics.isPasswordMatched = async function (plainTextPassword, hashedPassword) {
+  return bcrypt.compare(plainTextPassword, hashedPassword)
+}
 
 //crate model
 export const User = model<TUser, UserModel>('User', userSchema);

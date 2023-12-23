@@ -9,27 +9,31 @@ import bcrypt from 'bcrypt'
 const loginUser = async (payload: TLoginUser) => {
     console.log(payload);
 
-    //checking if the user is exists
-    const isUserExists = await User.findOne({ id: payload?.id })
-    console.log(isUserExists);
-
-    if (!isUserExists) {
+    //checking if the user is exist
+    const user = await User.isUserExistByCustomId(payload.id)
+        if (! user) {
         throw new AppError(httpStatus.NOT_FOUND,'This user is not exist')
     }
-    //checking if the user is already deleted
-    const isDeleted = isUserExists?.isDeleted
-    if (isDeleted) {
-        throw new AppError(httpStatus.FORBIDDEN,'This user is deleted')
-    }
-    //checking if the user is blocked
-    const userStatus = isUserExists?.status;
-    if (userStatus === 'blocked') {
-        throw new AppError(httpStatus.FORBIDDEN,'This user is blocked')
-    }
-    //checking if the password is correct
-    const isPasswordMatched = await bcrypt.compare(payload?.password, isUserExists?.password)
-    console.log(isPasswordMatched);
 
+
+       //checking if the user is already deleted
+       const isDeleted = user?.isDeleted
+       if (isDeleted) {
+           throw new AppError(httpStatus.FORBIDDEN,'This user is deleted')
+       }
+       //checking if the user is blocked
+       const userStatus = user?.status;
+       if (userStatus === 'blocked') {
+           throw new AppError(httpStatus.FORBIDDEN,'This user is blocked')
+    }
+    
+
+
+    //checking if the password is correct
+    if (! await User.isPasswordMatched(payload.password, user?.password)) {
+        throw new AppError(httpStatus.FORBIDDEN,'Password do not matched')
+    }
+    
 
     return {};
 };
