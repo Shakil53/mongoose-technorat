@@ -15,69 +15,83 @@ const getAllStudentFromDB = async (query: Record<string, unknown>) => {
     console.log('base query', query);
     const queryObj = { ...query }; //copy of query
 
-    console.log({query}, {queryObj});
+    console.log({ query }, { queryObj });
     //{email: { $regex: query.searchTerm, $option: 'i'}}
     //{name: { $regex: query.searchTerm, $option: 'i'}}
     //{'name.firstName': { $regex: query.searchTerm, $option: 'i'}}
 
 
 
-//     let searchTerm = '';
-//     if (query?.searchTerm) {
-//         searchTerm = query?.searchTerm as string;
-//     }
+    //     let searchTerm = '';
+    //     if (query?.searchTerm) {
+    //         searchTerm = query?.searchTerm as string;
+    //     }
 
-//     const searchQuery = Student.find({
-//         $or: studentSearchableFields.map((field) => ({
-//             [field]: {$regex: searchTerm, $option: 'i'}
-//         }))
-//     });
+    //     const searchQuery = Student.find({
+    //         $or: studentSearchableFields.map((field) => ({
+    //             [field]: {$regex: searchTerm, $option: 'i'}
+    //         }))
+    //     });
 
 
-//     //filtering
-//     const excludeFields = ['searchTerm', 'sort', 'limit','page', 'fields']
-//     excludeFields.forEach(el => delete queryObj[el]);
-//     console.log(query, queryObj);
+    //     //filtering
+    //     const excludeFields = ['searchTerm', 'sort', 'limit','page', 'fields']
+    //     excludeFields.forEach(el => delete queryObj[el]);
+    //     console.log(query, queryObj);
 
-//     console.log({ query }, { queryObj });
+    //     console.log({ query }, { queryObj });
     
-//     const filterQuery = searchQuery.find(queryObj);
+    //     const filterQuery = searchQuery.find(queryObj);
 
-//     let sort = '-createdAt';
-//     if (query.sort) {
-//         sort = query?.sort as string;
-//     }
+    //     let sort = '-createdAt';
+    //     if (query.sort) {
+    //         sort = query?.sort as string;
+    //     }
 
-//     const sortQuery = filterQuery.sort(sort)
+    //     const sortQuery = filterQuery.sort(sort)
     
-//     let page = 1
-//     let limit = 1;
-//     let skip = 0
+    //     let page = 1
+    //     let limit = 1;
+    //     let skip = 0
 
-//     if (query.limit) {
-//         limit = Number(query?.limit);
-//     }
-//     if (query.page) {
-//         page = Number(query.page)
-//         skip = (page-1)* limit
-//     }
-//     const paginateQuery = sortQuery.skip(skip)
+    //     if (query.limit) {
+    //         limit = Number(query?.limit);
+    //     }
+    //     if (query.page) {
+    //         page = Number(query.page)
+    //         skip = (page-1)* limit
+    //     }
+    //     const paginateQuery = sortQuery.skip(skip)
 
 
-//     const limitQuery = paginateQuery.limit(limit)
+    //     const limitQuery = paginateQuery.limit(limit)
 
-//     //field limiting
-//     let fields = '-__v'
-//     if (query.fields) {
-//         fields = (query.fields as string).split(',').join(' ')
-//         console.log(fields);
-//     }
+    //     //field limiting
+    //     let fields = '-__v'
+    //     if (query.fields) {
+    //         fields = (query.fields as string).split(',').join(' ')
+    //         console.log(fields);
+    //     }
 
-//     const fieldQuery = await limitQuery.select(fields)
+    //     const fieldQuery = await limitQuery.select(fields)
 
     //     return fieldQuery;
     
-    const studentQuery = new QueryBuilder(Student.find(), query).search(studentSearchableFields).filter().sort().paginate().fields();
+    const studentQuery = new QueryBuilder(Student.find()
+        .populate('user')
+        .populate('admissionSemester')
+        .populate({
+            path: 'academicDepartment',
+            populate: {
+                path: 'academciFaculty',
+                },
+        }),
+        query)
+        .search(studentSearchableFields)
+        .filter()
+        .sort()
+        .paginate()
+        .fields();
 
     const result = await studentQuery.modelQuery
     return result;
