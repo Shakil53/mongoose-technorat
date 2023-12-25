@@ -48,7 +48,9 @@ const decoded = jwt.verify(token, config.jwt_access_secret as string) as JwtPayl
            throw new AppError(httpStatus.FORBIDDEN,'This user is blocked')
     }
     
-    if(user.passwordChangedAt && User.isJWTIssuedBeforePasswordChanged(user.passwordChangedAt, iat as number))
+        if (user.passwordChangedAt && User.isJWTIssuedBeforePasswordChanged(user.passwordChangedAt, iat as number)) {
+            throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized!')
+    }
 
 
 
