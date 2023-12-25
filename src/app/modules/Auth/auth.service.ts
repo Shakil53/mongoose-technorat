@@ -173,7 +173,7 @@ const forgetPassword = async (userId: string) => {
         
  
     
-    const resetUILink = `http://localhost:3000?id=${user.id}token=${accessToken}`
+    const resetUILink = `http://localhost:3000?id=${user.id}&token=${accessToken}`
 
 
 
