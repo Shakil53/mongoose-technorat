@@ -5,7 +5,7 @@ import { TLoginUser } from "./auth.interface";
 import { JwtPayload } from 'jsonwebtoken';
 import config from "../../config";
 import bcrypt from 'bcrypt'
-import { createToken } from "./auth.ultils";
+import { createToken, verifyToken } from "./auth.ultils";
 import jwt from 'jsonwebtoken'
 import { sendEmail } from "../../utils/sendEmail";
 
@@ -201,10 +201,7 @@ const resetPassword =  async(payload: {id: string, newPassword: string}, token: 
     }
     
     //token varify
-    const decoded = jwt.verify(
-        token,
-        config.jwt_access_secret as string,
-    ) as JwtPayload;
+    const decoded = verifyToken(token,config.jwt_refresh_secret as string);
 
     if (payload.id !== decoded.userId) {
             throw new AppError(httpStatus.FORBIDDEN, 'You are forbiden')
