@@ -32,6 +32,10 @@ const facultySchema = new Schema<TFaculty, FacultyModel>({
         type: String,
         reqired: [true, 'ID is required']
     },
+    password: {
+        type: String,
+        required: [true, "Password is required"]
+    },
     user: {
         type: Schema.Types.ObjectId,
         required: [true, 'User id is required'],

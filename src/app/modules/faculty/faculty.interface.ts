@@ -9,7 +9,7 @@ export type TBloodGroup =
   | 'AB+'
   | 'AB-'
   | 'O+'
-    | 'O-';
+  | 'O-';
   
 export type TUserName = {
     firstName: string;
@@ -19,6 +19,7 @@ export type TUserName = {
 
 export type TFaculty = {
     id: string;
+    password: string,
     user: Types.ObjectId;
     designation: string;
     name: TUserName;

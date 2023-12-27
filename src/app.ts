@@ -8,7 +8,6 @@ import { UserRoutes } from './app/modules/user/user.route';
 import globalErrorhandler from './app/middlewares/globalErrorhandler';
 
 import router from './app/routes';
-import notFound from './app/middlewares/notfound';
 import cookieParser from 'cookie-parser';
 
 
@@ -34,7 +33,7 @@ app.get('/', test);
 app.use(globalErrorhandler);
 
 //not Found
-app.use(notFound)
+// app.use(notFound)
 
 export default app;
 // C:\Project\mongoose-technorat/.env
