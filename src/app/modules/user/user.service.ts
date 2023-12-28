@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import httpStatus from "http-status"
 import config from "../../config"
 import AppError from "../../errors/AppError"
@@ -11,11 +12,12 @@ import { AcademicDepartment } from "../academicDepartment/academicDepartment.mod
 import { Faculty } from "../faculty/faculty.model"
 import { Admin } from "../admin/admin.model"
 import { TAdmin } from "../admin/admin.interface"
+import { sendImageToCludinary } from "../../utils/sendImageToCloudinary"
 
 
 
 
-const createStudentIntoDB = async (password: string, studentData: TStudent) => {
+const createStudentIntoDB = async (file: any, password: string, studentData: TStudent) => {
     //create a user object
     const userData: Partial<TUser> = {}
 
@@ -36,7 +38,14 @@ const createStudentIntoDB = async (password: string, studentData: TStudent) => {
     try {
         session.startTransaction()
         //set manually generated id
-    userData.id = '2023100001'
+      userData.id = await generateStudentId(admissionSemester);
+
+      const path = file?.path;
+      const imageName = `${userData.id}${studentData?.name?.firstName}`
+      //send image to cloudinary
+      sendImageToCludinary(imageName, path)
+
+      
 
     //create a user transaction- 1
     const newUser = await User.create([userData], {session}) //array
