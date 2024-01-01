@@ -1,12 +1,13 @@
 import httpStatus from "http-status";
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendRes";
+import { EnrolledCourseService } from "./enrolledCourse.service";
 
 
 
 const createEnrolledCourse = catchAsync(async (req, res) => {
-    const result = await EnrolledCourseController.createEnrolledCourse
-
+    const userId = req.user.userId;
+    const result = await EnrolledCourseService.createEnrolledCourseIntoDB(userId, req.body)
 
 
         sendResponse(res, {
