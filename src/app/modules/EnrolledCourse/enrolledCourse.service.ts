@@ -133,6 +133,28 @@ const createEnrolledCourseIntoDB = async (userId: string, payload: TEnrolledCour
 }
 
 
+const updateEnrolledCourseMarksIntoDB = async (
+    facultyId: string,
+    payload: Partial<TEnrolledCourse>,
+) => {
+    const { semesterRegistration, offeredCourse, student, courseMark } = payload;
+
+    const isSemesterRegistrationExists = await SemesterRegistration.findById(semesterRegistration);
+    if (!isSemesterRegistrationExists) {
+        throw new AppError(httpStatus.NOT_FOUND, 'Semester Registration not found!')
+    }
+    const isOfferedCourseExists = await OfferedCourse.findById(offeredCourse);
+    if (!isOfferedCourseExists) {
+        throw new AppError(httpStatus.NOT_FOUND, 'Offered course are not found!')
+    }
+    const isStudentExists = await Student.findById(student);
+    if (!isStudentExists) {
+        throw new AppError(httpStatus.NOT_FOUND, 'Student is not found!')
+    }
+    
+}
+
 export const EnrolledCourseService = {
     createEnrolledCourseIntoDB,
+    updateEnrolledCourseMarksIntoDB,
 }
