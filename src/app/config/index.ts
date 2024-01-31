@@ -17,6 +17,7 @@ export default {
   reset_pass_ui_link: process.env.RESET_PASS_UI_LINK,
   cloud_name: process.env.CLOUD_NAME,
   cloud_api_key: process.env.CLOUD_API,
-  cloud_secret_key: process.env.CLOUR_SECRET_KEY
+  cloud_secret_key: process.env.CLOUR_SECRET_KEY,
+  super_admin_password: process.env.SUPER_ADMIN,
 
 };
